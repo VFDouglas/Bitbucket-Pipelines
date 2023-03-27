@@ -1,0 +1,35 @@
+# Variables
+## $FTP_USERNAME
+## $FTP_PASSWORD
+## $FTP_HOST (IP concatenated with the destination folder) Ex.: "127.0.0.1/public"
+## $REPO_FOLDER (repository folder to upload to the server) Ex.: "public"
+
+image: atlassian/default-image:latest
+pipelines:
+  # First deploy of all files to the server
+  custom:
+    inicio:
+      - step:
+          runs-on:
+            - self.hosted
+            - linux
+          name: Initial file upload
+          script:
+            - apt-get update && apt-get install -y git-ftp
+            - git reset --hard
+            - git config git-ftp.syncroot "$REPO_FOLDER"
+            - git ftp init -u $FTP_USERNAME -p $FTP_PASSWORD $FTP_HOST
+  # Usual deploy, using last commit
+  branches:
+    master:
+      - step:
+          runs-on:
+            - self.hosted
+            - linux
+          name: Deploying to production
+          deployment: production
+          script:
+            - apt-get update && apt-get install -y git-ftp
+            - git reset --hard
+            - git config git-ftp.syncroot "$REPO_FOLDER"
+            - git ftp push -u $FTP_USERNAME -p $FTP_PASSWORD $FTP_HOST
