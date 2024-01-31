@@ -4,7 +4,7 @@
 ## $FTP_HOST (IP concatenated with the destination folder) Ex.: "127.0.0.1/public"
 ## $REPO_FOLDER (repository folder to upload to the server) Ex.: "public"
 
-image: atlassian/default-image:latest
+image: debian:stable-slim
 pipelines:
   # First deploy of all files to the server
   custom:
